@@ -1,0 +1,20 @@
+{
+  "hammer_swing_sound": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "thor-hammer:hammer_swing_sound",
+        "stream": false
+      }
+    ]
+  },
+   "hammer_throw_sound": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "thor-hammer:hammer_throw_sound",
+        "stream": false
+      }
+    ]
+  } 
+}  

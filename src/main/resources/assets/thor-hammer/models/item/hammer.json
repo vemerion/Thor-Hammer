@@ -1,0 +1,39 @@
+{
+  "parent": "builtin/entity",
+  "gui_light": "front",
+  "textures": {
+    "layer0": "thor-hammer:entity/hammer"     
+  },
+  "display": {
+    "thirdperson_righthand": {
+        "rotation": [ 0, 0, 0 ],
+        "translation": [ 8, 13, 9 ],
+        "scale": [ 1, 1, 1 ]
+    },
+    "thirdperson_lefthand": {
+        "rotation": [ 0, 0, 0 ],
+        "translation": [ -8, 13, 9 ],
+        "scale": [ 1, 1, 1 ]
+    },
+    "firstperson_righthand": {
+        "rotation": [ -10, 5, 0 ],
+        "translation": [ 10, 17, -1],
+        "scale": [ 1, 1, 1 ]
+    },
+    "firstperson_lefthand": {
+        "rotation": [ -10, 5, 0 ],
+        "translation": [ -3, 17, 3],
+        "scale": [ 1, 1, 1 ]
+    },         
+    "gui": {
+      "rotation": [ 0, 90, 0 ],
+      "translation": [ 7.5, 12.5, 0.0 ],
+      "scale": [ 1, 1, 1]
+    },
+    "ground": {
+        "rotation": [ 0, 0, 0 ],
+        "translation": [ 10, 16, 10],
+        "scale":[ 1, 1, 1 ]
+    }  
+  } 
+}

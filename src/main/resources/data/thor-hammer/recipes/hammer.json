@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "isi",
+    " l ",
+    " l "
+  ],
+  "key":
+  {
+    "s":
+    {
+      "item": "minecraft:nether_star"
+    },
+    "i":
+    {
+      "item": "minecraft:iron_block"
+    },
+    "l":
+    {
+      "tag": "minecraft:logs"
+    }
+  },
+  "result":
+  {
+    "item": "thor-hammer:hammer"
+  }
+}
