@@ -7,12 +7,12 @@ import mod.vemerion.thorhammer.ThorHammer;
 import mod.vemerion.thorhammer.entity.HammerEntity;
 import mod.vemerion.thorhammer.model.HammerModel;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class HammerRenderer extends EntityRenderer<HammerEntity> {
 	public static final ResourceLocation HAMMER_TEXTURES = new ResourceLocation(ThorHammer.MODID,

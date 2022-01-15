@@ -4,11 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
@@ -18,11 +19,14 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(modid = ThorHammer.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEventSubscriber {
 
-	private static final Vec3d[] startPositions = new Vec3d[] { new Vec3d(1, 1, -1), new Vec3d(-1, 1, -0.5) };
-	private static final Vec3d[] stopPositions = new Vec3d[] { new Vec3d(0.4, 0.4, -1.5), new Vec3d(-0.4, 0.4, -1.0) };
+	private static final net.minecraft.util.math.vector.Vector3d[] startPositions = new Vector3d[] {
+			new Vector3d(1, 1, -1), new Vector3d(-1, 1, -0.5) };
+	private static final Vector3d[] stopPositions = new Vector3d[] { new Vector3d(0.4, 0.4, -1.5),
+			new Vector3d(-0.4, 0.4, -1.0) };
 
-	private static final Vec3d[] startRotation = new Vec3d[] { new Vec3d(0, 0, 0), new Vec3d(0, 0, 0) };
-	private static final Vec3d[] stopRotation = new Vec3d[] { new Vec3d(-80, 55, 0), new Vec3d(-80, -55, 0) };
+	private static final Vector3d[] startRotation = new Vector3d[] { new Vector3d(0, 0, 0), new Vector3d(0, 0, 0) };
+	private static final Vector3d[] stopRotation = new Vector3d[] { new Vector3d(-80, 55, 0),
+			new Vector3d(-80, -55, 0) };
 
 	private static int i;
 	private static boolean wasAttacking;
@@ -45,8 +49,9 @@ public class ClientForgeEventSubscriber {
 						MathHelper.lerp(progress, startPositions[i].y, stopPositions[i].y),
 						MathHelper.lerp(progress, startPositions[i].z, stopPositions[i].z));
 
-				event.getItemStack().getItem().getItemStackTileEntityRenderer().render(event.getItemStack(), matrix,
-						event.getBuffers(), event.getLight(), OverlayTexture.NO_OVERLAY);
+				event.getItemStack().getItem().getItemStackTileEntityRenderer().func_239207_a_(event.getItemStack(),
+						ItemCameraTransforms.TransformType.NONE, matrix, event.getBuffers(), event.getLight(),
+						OverlayTexture.NO_OVERLAY);
 				wasAttacking = true;
 			} else if (player.isHandActive() && player.getActiveHand().equals(event.getHand())) {
 				wasAttacking = false;
@@ -61,8 +66,9 @@ public class ClientForgeEventSubscriber {
 				matrix.rotate(new Quaternion((float) MathHelper.lerp(progress, 0, 45), 0, 0, true));
 				matrix.translate(1, 0, MathHelper.lerp(progress, -1, -0.8));
 
-				event.getItemStack().getItem().getItemStackTileEntityRenderer().render(event.getItemStack(), matrix,
-						event.getBuffers(), event.getLight(), OverlayTexture.NO_OVERLAY);
+				event.getItemStack().getItem().getItemStackTileEntityRenderer().func_239207_a_(event.getItemStack(),
+						ItemCameraTransforms.TransformType.NONE, matrix, event.getBuffers(), event.getLight(),
+						OverlayTexture.NO_OVERLAY);
 			} else {
 				wasAttacking = false;
 

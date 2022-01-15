@@ -12,8 +12,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -39,7 +39,7 @@ public class HammerEntity extends AbstractArrowEntity {
 
 		if (!world.isRemote && timeInGround == 0 && ticksExisted > 15 && ticksExisted % 3 == 0) {
 
-			Entity shooter = getShooter();
+			Entity shooter = func_234616_v_(); // getShooter()
 			if (shooter != null && shooter.isAlive()) {
 				shoot(shooter.getPosX() - getPosX(), shooter.getEyePosition(0).getY() - getPosY(),
 						shooter.getPosZ() - getPosZ(), 2, 0);
@@ -60,11 +60,11 @@ public class HammerEntity extends AbstractArrowEntity {
 	protected void onEntityHit(EntityRayTraceResult result) {
 		if (!world.isRemote && result.getEntity() instanceof LivingEntity) {
 			LivingEntity struck = (LivingEntity) result.getEntity();
-			if (!struck.getUniqueID().equals(getShooter().getUniqueID())) {
-				Vec2f xzPos = new Vec2f((float) struck.getPosX(), (float) struck.getPosZ());
-				Vec3d vec3d = this.getMotion().rotateYaw(isToTheLeftOf(xzPos) ? -90 : 90).mul(1.0D, 0.0D, 1.0D)
+			if (!struck.getUniqueID().equals(func_234616_v_().getUniqueID())) {
+				Vector2f xzPos = new Vector2f((float) struck.getPosX(), (float) struck.getPosZ());
+				Vector3d Vector3d = this.getMotion().rotateYaw(isToTheLeftOf(xzPos) ? -90 : 90).mul(1.0D, 0.0D, 1.0D)
 						.normalize().scale(0.8);
-				struck.addVelocity(vec3d.x, 0.1D, vec3d.z);
+				struck.addVelocity(Vector3d.x, 0.1D, Vector3d.z);
 				struck.attackEntityFrom(DamageSource.LIGHTNING_BOLT, 6);
 				playSound(SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, 1, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));
 			}
@@ -74,7 +74,7 @@ public class HammerEntity extends AbstractArrowEntity {
 	@Override
 	public void onCollideWithPlayer(PlayerEntity entityIn) {
 		if (!world.isRemote && ticksExisted > 10) {
-			Entity shooter = getShooter();
+			Entity shooter = func_234616_v_();
 			if (shooter == null || shooter.getUniqueID() == entityIn.getUniqueID()) {
 				if (entityIn.inventory.addItemStackToInventory(getArrowStack())) {
 					entityIn.onItemPickup(this, 1);
@@ -86,10 +86,10 @@ public class HammerEntity extends AbstractArrowEntity {
 		}
 	}
 
-	private boolean isToTheLeftOf(Vec2f point) {
-		Vec3d direction = getMotion().normalize();
-		Vec2f forward = new Vec2f((float) direction.x, (float) direction.z);
-		point = new Vec2f(point.x - (float) getPosX(), point.y - (float) getPosZ());
+	private boolean isToTheLeftOf(Vector2f point) {
+		Vector3d direction = getMotion().normalize();
+		Vector2f forward = new Vector2f((float) direction.x, (float) direction.z);
+		point = new Vector2f(point.x - (float) getPosX(), point.y - (float) getPosZ());
 		return forward.x * point.y - forward.y * point.x > 0;
 	}
 

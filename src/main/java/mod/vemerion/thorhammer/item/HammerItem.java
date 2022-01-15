@@ -1,13 +1,17 @@
 package mod.vemerion.thorhammer.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 
 import mod.vemerion.thorhammer.ThorHammer;
 import mod.vemerion.thorhammer.entity.HammerEntity;
 import mod.vemerion.thorhammer.renderer.HammerTileEntityRenderer;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -20,11 +24,13 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class HammerItem extends Item {
 	private final float attackDamage;
 	private final float attackSpeed;
+	private Multimap<Attribute, AttributeModifier> attributeModifiers;
 
 	public HammerItem() {
 		super(new Item.Properties().rarity(Rarity.EPIC).group(ItemGroup.COMBAT).maxStackSize(1)
@@ -34,29 +40,33 @@ public class HammerItem extends Item {
 	}
 
 	@Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-		Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
 		if (slot == EquipmentSlotType.MAINHAND) {
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER,
-					"Weapon modifier", (double) this.attackDamage, AttributeModifier.Operation.ADDITION));
-			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER,
-					"Weapon modifier", (double) this.attackSpeed, AttributeModifier.Operation.ADDITION));
+			if (attributeModifiers == null) {
+				Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier",
+						attackDamage, AttributeModifier.Operation.ADDITION));
+				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier",
+						attackSpeed, AttributeModifier.Operation.ADDITION));
+				this.attributeModifiers = builder.build();
+			}
+			return attributeModifiers;
 		}
 
-		return multimap;
+		return super.getAttributeModifiers(slot, stack);
 	}
 
 	@Override
 	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		World world = attacker.world;
-		target.knockBack(attacker, 2, (double) MathHelper.sin(attacker.rotationYaw * ((float) Math.PI / 180F)),
+		target.applyKnockback(2, (double) MathHelper.sin(attacker.rotationYaw * ((float) Math.PI / 180F)),
 				(double) (-MathHelper.cos(attacker.rotationYaw * ((float) Math.PI / 180F))));
 		world.playSound(null, attacker.getPosition(), ThorHammer.HAMMER_SWING_SOUND, SoundCategory.PLAYERS, 1,
 				attacker.getRNG().nextFloat() * 0.5f + 0.5f);
 
 		if (attacker.getRNG().nextDouble() < 0.05) {
-			LightningBoltEntity lightning = new LightningBoltEntity(world, target.getPosX(), target.getPosY(),
-					target.getPosZ(), false);
+			LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
+			lightning.moveForced(Vector3d.copyCenteredHorizontally(target.getPosition()));
 			world.addEntity(lightning);
 		}
 		return true;
@@ -72,7 +82,7 @@ public class HammerItem extends Item {
 			PlayerEntity player = (PlayerEntity) entityLiving;
 			if (!worldIn.isRemote) {
 				HammerEntity hammer = new HammerEntity(player, worldIn);
-				hammer.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.0F, 0);
+				hammer.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 2.0F, 0);
 				worldIn.addEntity(hammer);
 				player.inventory.deleteStack(stack);
 				entityLiving.world.playSound(null, entityLiving.getPosition(), ThorHammer.HAMMER_THROW_SOUND,
